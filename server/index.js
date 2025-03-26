@@ -25,12 +25,12 @@ app.post('/api/contact', async (req, res) => {
       from: email,
       to: process.env.EMAIL_USER,
       subject: `New Contact from ${name}`,
-      text: `Email: ${email}\n\nMessage:\n${message}`
+      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
     });
 
     res.status(200).json({ message: 'Message sent successfully!' });
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Error sending contact email:', error);
     res.status(500).json({ error: 'Something went wrong.' });
   }
 });
@@ -61,6 +61,7 @@ app.post('/api/book', async (req, res) => {
     res.status(500).json({ error: 'Something went wrong.' });
   }
 });
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

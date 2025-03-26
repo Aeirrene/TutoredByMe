@@ -16,11 +16,17 @@ function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     try {
       const res = await fetch('http://localhost:5000/api/book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          format: 'general',
+          details: formData.message
+        })
       });
   
       const data = await res.json();
@@ -32,10 +38,11 @@ function Contact() {
         alert(data.error || 'Something went wrong.');
       }
     } catch (error) {
-      console.error('Booking form error:', error);
-      alert('Failed to send booking.');
+      console.error('Contact form error:', error);
+      alert('Failed to send message.');
     }
   };
+  
   
   
 
