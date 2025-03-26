@@ -14,13 +14,30 @@ function Contact() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add fetch logic if you want to send data to the server
-    console.log('Form submitted:', formData);
-    alert('Message sent!');
-    setFormData({ name: '', email: '', message: '' });
+    try {
+      const res = await fetch('http://localhost:5000/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        alert(data.message); // "Booking sent successfully!"
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        alert(data.error || 'Something went wrong.');
+      }
+    } catch (error) {
+      console.error('Booking form error:', error);
+      alert('Failed to send booking.');
+    }
   };
+  
+  
 
   return (
     <form

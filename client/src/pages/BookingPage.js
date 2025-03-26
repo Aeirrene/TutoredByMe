@@ -22,12 +22,29 @@ function BookingPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(`Booking Request for ${format}:`, formData);
-    alert(`Booking request for ${format} sent!`);
-    setFormData({ name: '', email: '', details: '' });
+    try {
+      const res = await fetch('http://localhost:5000/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, format })
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        alert(data.message); // "Booking sent successfully!"
+        setFormData({ name: '', email: '', details: '' });
+      } else {
+        alert(data.error || 'Something went wrong.');
+      }
+    } catch (error) {
+      console.error('Booking form error:', error);
+      alert('Failed to send booking.');
+    }
   };
+  
 
   return (
     <div className="min-h-screen bg-[#1e1b18] text-[#e6e1dc] px-4 py-10 font-[Inter]">
