@@ -1,98 +1,98 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 function BookingPage() {
-  const query = new URLSearchParams(useLocation().search);
-  const type = query.get('type') || 'general';
+  const [searchParams] = useSearchParams();
+  const format = searchParams.get('type') || 'format1';
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    tutoringType: type,
-    availability: '',
-    questions: '',
+    details: ''
   });
 
-  const [status, setStatus] = useState('');
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to top on page load
+  }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setStatus('Sending...');
-
-    try {
-      // You can reuse your existing backend route or make a new one
-      const res = await axios.post('http://localhost:5000/api/contact', {
-        name: formData.name,
-        email: formData.email,
-        message: `
-Tutoring Type: ${formData.tutoringType}
-Availability: ${formData.availability}
-Additional Questions: ${formData.questions}
-        `,
-      });
-
-      setStatus(res.data.message);
-      setFormData({
-        name: '',
-        email: '',
-        tutoringType: type,
-        availability: '',
-        questions: '',
-      });
-    } catch (err) {
-      console.error(err);
-      setStatus('Failed to send booking.');
-    }
+    console.log(`Booking Request for ${format}:`, formData);
+    alert(`Booking request for ${format} sent!`);
+    setFormData({ name: '', email: '', details: '' });
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: 'auto', padding: '1rem' }}>
-      <h1>Book a {type} Tutoring Session</h1>
+    <div className="min-h-screen bg-[#1e1b18] text-[#e6e1dc] px-4 py-10 font-[Inter]">
+      <div className="max-w-3xl mx-auto bg-[#2d2926] border border-[#3e3a36] rounded-xl shadow-md p-8 space-y-6">
+        <h1
+          className="text-4xl font-bold text-center tracking-wide text-[#e6e1dc]"
+          style={{ fontFamily: "'Playfair Display', serif" }}
+        >
+          Book a Session ({format.charAt(0).toUpperCase() + format.slice(1)})
+        </h1>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Your full name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        /><br /><br />
+        <form onSubmit={handleSubmit} className="space-y-6 text-sm">
+          {/* Name */}
+          <div className="flex flex-col">
+            <label htmlFor="name" className="mb-1 text-gray-300">Name</label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className="bg-[#1e1b18] text-white border border-[#3e3a36] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#5f4b3b]"
+            />
+          </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Your email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        /><br /><br />
+          {/* Email */}
+          <div className="flex flex-col">
+            <label htmlFor="email" className="mb-1 text-gray-300">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="bg-[#1e1b18] text-white border border-[#3e3a36] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#5f4b3b]"
+            />
+          </div>
 
-        <input
-          type="text"
-          name="availability"
-          placeholder="Your availability (days/times)"
-          value={formData.availability}
-          onChange={handleChange}
-          required
-        /><br /><br />
+          {/* Details */}
+          <div className="flex flex-col">
+            <label htmlFor="details" className="mb-1 text-gray-300">What would you like help with?</label>
+            <textarea
+              name="details"
+              id="details"
+              rows="5"
+              value={formData.details}
+              onChange={handleChange}
+              required
+              className="bg-[#1e1b18] text-white border border-[#3e3a36] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#5f4b3b]"
+            />
+          </div>
 
-        <textarea
-          name="questions"
-          placeholder="Any specific topics or questions?"
-          value={formData.questions}
-          onChange={handleChange}
-        /><br /><br />
-
-        <button type="submit">Submit Booking</button>
-      </form>
-
-      <p>{status}</p>
+          {/* Submit */}
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="bg-[#5f4b3b] text-white px-6 py-2 rounded-md hover:bg-[#7a5c4d] transition"
+            >
+              Submit Booking
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
